@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Fusion — Маркетинговый гид</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-box">
+            <h1>VR Fusion</h1>
+            <p class="subtitle">Маркетинговый гид для команды</p>
+            <form id="login-form">
+                <input
+                    type="password"
+                    id="password-input"
+                    placeholder="Введите пароль"
+                    autocomplete="current-password"
+                    required
+                >
+                <button type="submit">Войти</button>
+            </form>
+            <p id="auth-error" class="auth-error"></p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="main-container" class="main-container">
+        <!-- Mobile Menu Toggle -->
+        <button id="menu-toggle" class="menu-toggle">☰</button>
+
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>VR Fusion</h2>
+                <span class="brand">Маркетинговый гид</span>
+            </div>
+
+            <div class="nav-menu">
+                <a href="#" class="nav-item active" data-section="00-summary.html">
+                    <span class="nav-icon">📊</span> Резюме
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="#" class="nav-item" data-section="01-market.html">
+                    <span class="nav-icon">🌍</span> Обзор рынка
+                </a>
+                <a href="#" class="nav-item" data-section="02-competitors.html">
+                    <span class="nav-icon">🏆</span> Конкуренты
+                </a>
+                <a href="#" class="nav-item" data-section="03-channels.html">
+                    <span class="nav-icon">📢</span> Каналы продвижения
+                </a>
+                <a href="#" class="nav-item" data-section="04-segments.html">
+                    <span class="nav-icon">👥</span> Целевые сегменты
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="#" class="nav-item" data-section="05-content.html">
+                    <span class="nav-icon">📝</span> Контент-стратегия
+                </a>
+                <a href="#" class="nav-item" data-section="06-crm.html">
+                    <span class="nav-icon">💼</span> CRM и лояльность
+                </a>
+                <a href="#" class="nav-item" data-section="07-partnerships.html">
+                    <span class="nav-icon">🤝</span> Партнёрства
+                </a>
+                <a href="#" class="nav-item" data-section="08-seasonality.html">
+                    <span class="nav-icon">📅</span> Сезонность
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="#" class="nav-item" data-section="09-analytics.html">
+                    <span class="nav-icon">📈</span> Аналитика и KPI
+                </a>
+                <a href="#" class="nav-item" data-section="10-tournaments.html">
+                    <span class="nav-icon">🎮</span> Турниры
+                </a>
+                <a href="#" class="nav-item" data-section="11-premium.html">
+                    <span class="nav-icon">⭐</span> Премиум-каналы
+                </a>
+                <a href="#" class="nav-item" data-section="12-recommendations.html">
+                    <span class="nav-icon">✅</span> Рекомендации
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="#" class="nav-item" data-section="sources.html">
+                    <span class="nav-icon">📚</span> Источники
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <button id="logout-btn" class="logout-btn">
+                    <span class="nav-icon">🚪</span> Выйти
+                </button>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content">
+            <div id="section-content">
+                <!-- Content will be loaded here -->
+                <div class="card">
+                    <h2>Загрузка...</h2>
+                    <p>Подождите, загружается содержимое раздела.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
