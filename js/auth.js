@@ -11,7 +11,7 @@
  */
 
 // SHA-256 хеш пароля "vrfusion2026"
-const PASSWORD_HASH = '5a8dd3ad0756a93ded72b823b19dd877115c5e3fb4e5b6ccab43b2a62a8e9c34';
+const PASSWORD_HASH = 'c0907fbb2bbf56f021149e746a82dd790b785a1052dd4058db19ba3f9e02faa0';
 
 // Ключ для localStorage
 const AUTH_KEY = 'vr_fusion_auth';
