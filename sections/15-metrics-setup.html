@@ -1,0 +1,1227 @@
+<div class="section-content">
+    <div class="content-header">
+        <h1>Инструкция по настройке всех метрик</h1>
+        <p class="description">Полное руководство по внедрению сквозной аналитики для VR Fusion</p>
+    </div>
+
+    <!-- БЛОК 1: АРХИТЕКТУРА -->
+    <div class="card">
+        <h2>1. Архитектура аналитики VR Fusion</h2>
+
+        <div class="alert alert-info">
+            <strong>Цель:</strong> Создать систему, которая отслеживает путь клиента от первого контакта до повторной покупки и позволяет рассчитать ROI каждого рекламного канала.
+        </div>
+
+        <h3>Схема потоков данных</h3>
+        <div class="code-block">
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────┐    ┌──────────────┐
+│  ИСТОЧНИКИ      │    │  ТОЧКИ КОНТАКТА  │    │    CRM      │    │   ОТЧЁТЫ     │
+│  ТРАФИКА        │───▶│                  │───▶│             │───▶│              │
+├─────────────────┤    ├──────────────────┤    ├─────────────┤    ├──────────────┤
+│ Яндекс.Директ   │    │ Сайт + Метрика   │    │ Лиды        │    │ Дашборды     │
+│ VK Реклама      │    │ Звонки (коллтрек)│    │ Сделки      │    │ ROI по       │
+│ Telegram        │    │ Мессенджеры      │    │ Оплаты      │    │ каналам      │
+│ Яндекс.Бизнес   │    │ Офлайн (промокод)│    │ Повторные   │    │ LTV, CAC     │
+│ 2ГИС            │    │                  │    │             │    │              │
+│ Инфлюенсеры     │    │                  │    │             │    │              │
+└─────────────────┘    └──────────────────┘    └─────────────┘    └──────────────┘
+        </div>
+
+        <h3>Ключевые компоненты системы</h3>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">Яндекс.Метрика</div>
+                <div class="metric-label">Веб-аналитика</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">Коллтрекинг</div>
+                <div class="metric-label">Отслеживание звонков</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">UTM-метки</div>
+                <div class="metric-label">Разметка каналов</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">CRM</div>
+                <div class="metric-label">Продажи и клиенты</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- БЛОК 2: ЯНДЕКС.МЕТРИКА -->
+    <div class="card">
+        <h2>2. Настройка Яндекс.Метрики</h2>
+
+        <div class="alert alert-success">
+            <strong>Стоимость:</strong> Бесплатно<br>
+            <strong>Время настройки:</strong> 1-2 часа<br>
+            <strong>Сложность:</strong> Низкая
+        </div>
+
+        <h3>Шаг 2.1: Создание счётчика</h3>
+        <div class="instruction-block">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Войдите в Яндекс.Метрику</h4>
+                    <p>Откройте <a href="https://metrika.yandex.ru" target="_blank">metrika.yandex.ru</a> и войдите в аккаунт Яндекс.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Создайте новый счётчик</h4>
+                    <p>Нажмите <strong>"Добавить счётчик"</strong>. Заполните:</p>
+                    <ul>
+                        <li><strong>Имя:</strong> VR Fusion</li>
+                        <li><strong>Адрес сайта:</strong> ваш домен (например, vrfusion.ru)</li>
+                        <li><strong>Часовой пояс:</strong> Москва</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Включите дополнительные опции</h4>
+                    <ul>
+                        <li><strong>Вебвизор:</strong> ВКЛ (запись действий посетителей)</li>
+                        <li><strong>Карта кликов:</strong> ВКЛ</li>
+                        <li><strong>Карта скроллинга:</strong> ВКЛ</li>
+                        <li><strong>Отслеживание хеша:</strong> ВКЛ (для SPA)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Сохраните и получите код</h4>
+                    <p>После создания вы получите код счётчика и номер (например, 12345678).</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Шаг 2.2: Установка кода на сайт</h3>
+        <div class="instruction-block">
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h4>Скопируйте код счётчика</h4>
+                    <p>Код выглядит примерно так:</p>
+                    <div class="code-block">
+&lt;!-- Yandex.Metrika counter --&gt;
+&lt;script type="text/javascript"&gt;
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j &lt; document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(XXXXXXXX, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+&lt;/script&gt;
+&lt;noscript&gt;&lt;div&gt;&lt;img src="https://mc.yandex.ru/watch/XXXXXXXX" style="position:absolute; left:-9999px;" alt="" /&gt;&lt;/div&gt;&lt;/noscript&gt;
+&lt;!-- /Yandex.Metrika counter --&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h4>Вставьте код на сайт</h4>
+                    <p>Добавьте код в секцию <code>&lt;head&gt;</code> на всех страницах сайта.</p>
+                    <p>Если используете CMS (WordPress, Tilda, Bitrix) — найдите раздел "Счётчики" или "Аналитика" в настройках.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                    <h4>Проверьте установку</h4>
+                    <p>Вернитесь в Метрику → Счётчики → ваш счётчик. Через 5-10 минут должен появиться статус "Счётчик установлен".</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Шаг 2.3: Настройка целей</h3>
+
+        <div class="alert alert-info">
+            <strong>Цели</strong> — это ключевые действия посетителей, которые вы хотите отслеживать: бронирование, звонок, отправка формы и т.д.
+        </div>
+
+        <h4>Обязательные цели для VR Fusion</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Название цели</th>
+                    <th>Тип</th>
+                    <th>Условие</th>
+                    <th>Ценность</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Бронирование завершено</strong></td>
+                    <td>Посещение страницы</td>
+                    <td>URL содержит: /thank-you или /success</td>
+                    <td>2 500 руб.</td>
+                </tr>
+                <tr>
+                    <td><strong>Клик по телефону</strong></td>
+                    <td>JavaScript-событие</td>
+                    <td>Идентификатор: phone_click</td>
+                    <td>500 руб.</td>
+                </tr>
+                <tr>
+                    <td><strong>Отправка формы</strong></td>
+                    <td>JavaScript-событие</td>
+                    <td>Идентификатор: form_submit</td>
+                    <td>1 000 руб.</td>
+                </tr>
+                <tr>
+                    <td><strong>Просмотр цен</strong></td>
+                    <td>Посещение страницы</td>
+                    <td>URL содержит: /prices или /цены</td>
+                    <td>100 руб.</td>
+                </tr>
+                <tr>
+                    <td><strong>Клик по WhatsApp</strong></td>
+                    <td>JavaScript-событие</td>
+                    <td>Идентификатор: whatsapp_click</td>
+                    <td>300 руб.</td>
+                </tr>
+                <tr>
+                    <td><strong>Клик "Забронировать"</strong></td>
+                    <td>JavaScript-событие</td>
+                    <td>Идентификатор: book_button_click</td>
+                    <td>200 руб.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="instruction-block">
+            <h4>Как создать цель</h4>
+
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Откройте настройки счётчика</h4>
+                    <p>Метрика → Счётчики → VR Fusion → Настройка → Цели.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Добавьте цель</h4>
+                    <p>Нажмите "Добавить цель" и выберите тип:</p>
+                    <ul>
+                        <li><strong>Посещение страниц</strong> — для страниц благодарности</li>
+                        <li><strong>JavaScript-событие</strong> — для кликов по кнопкам</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Заполните параметры</h4>
+                    <p>Укажите название, условие и ценность цели.</p>
+                </div>
+            </div>
+        </div>
+
+        <h4>Код для JavaScript-событий</h4>
+        <p>Добавьте эти коды к соответствующим элементам на сайте:</p>
+
+        <div class="code-block">
+// Клик по телефону
+&lt;a href="tel:+74951234567" onclick="ym(XXXXXXXX,'reachGoal','phone_click'); return true;"&gt;
+    +7 (495) 123-45-67
+&lt;/a&gt;
+
+// Клик по WhatsApp
+&lt;a href="https://wa.me/79001234567" onclick="ym(XXXXXXXX,'reachGoal','whatsapp_click'); return true;"&gt;
+    Написать в WhatsApp
+&lt;/a&gt;
+
+// Отправка формы
+&lt;form onsubmit="ym(XXXXXXXX,'reachGoal','form_submit');"&gt;
+    ...
+&lt;/form&gt;
+
+// Клик по кнопке "Забронировать"
+&lt;button onclick="ym(XXXXXXXX,'reachGoal','book_button_click');"&gt;
+    Забронировать
+&lt;/button&gt;
+        </div>
+
+        <div class="alert alert-warning">
+            <strong>Важно:</strong> Замените XXXXXXXX на ваш номер счётчика Метрики.
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Шаг 2.4: Связь с Яндекс.Директ</h3>
+
+        <div class="instruction-block">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Откройте настройки счётчика</h4>
+                    <p>Метрика → Счётчики → VR Fusion → Настройка → Доступ.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Добавьте доступ для Директа</h4>
+                    <p>Нажмите "Подключить Директ" или добавьте логин рекламного аккаунта.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>В Яндекс.Директ включите автоматические цели</h4>
+                    <p>Директ → Кампания → Стратегия → Выберите "Оптимизация конверсий" и укажите цели из Метрики.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Шаг 2.5: Настройка Вебвизора</h3>
+
+        <div class="alert alert-info">
+            <strong>Вебвизор</strong> записывает сессии посетителей на сайте. Вы видите, как реальные люди взаимодействуют со страницами.
+        </div>
+
+        <div class="instruction-block">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Проверьте, что Вебвизор включён</h4>
+                    <p>Настройки счётчика → Вебвизор, карта скроллинга, аналитика форм → ВКЛ.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Дождитесь записей</h4>
+                    <p>Записи появятся через 24-48 часов после активации. Хранятся 15 дней.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Анализируйте поведение</h4>
+                    <p>Метрика → Вебвизор → фильтруйте по страницам, целям, источникам.</p>
+                </div>
+            </div>
+        </div>
+
+        <h4>Что искать в Вебвизоре</h4>
+        <ul>
+            <li><strong>Где люди "спотыкаются"</strong> — задерживаются или уходят</li>
+            <li><strong>Как заполняют формы</strong> — какие поля вызывают проблемы</li>
+            <li><strong>Что кликают</strong> — работают ли все кнопки</li>
+            <li><strong>Мобильное vs десктоп</strong> — удобен ли сайт на телефоне</li>
+        </ul>
+    </div>
+
+    <!-- БЛОК 3: КОЛЛТРЕКИНГ -->
+    <div class="card">
+        <h2>3. Настройка коллтрекинга</h2>
+
+        <div class="alert alert-success">
+            <strong>Стоимость:</strong> от 1 000 руб./месяц<br>
+            <strong>Время настройки:</strong> 2-4 часа<br>
+            <strong>Сложность:</strong> Средняя
+        </div>
+
+        <h3>Зачем нужен коллтрекинг</h3>
+        <p>Для VR-арен звонки — важный канал конверсии. Без коллтрекинга вы не знаете, какая реклама привела звонящего клиента.</p>
+
+        <h3>Сравнение сервисов</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Сервис</th>
+                    <th>Цена/мес</th>
+                    <th>Интеграции</th>
+                    <th>Особенности</th>
+                    <th>Для кого</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Callibri</strong></td>
+                    <td>от 1 000 руб.</td>
+                    <td>Метрика, CRM</td>
+                    <td>Простой, бюджетный</td>
+                    <td>Малый бизнес</td>
+                </tr>
+                <tr>
+                    <td><strong>Calltouch</strong></td>
+                    <td>от 3 000 руб.</td>
+                    <td>Метрика, CRM, сквозная</td>
+                    <td>Полный функционал</td>
+                    <td>Средний бизнес</td>
+                </tr>
+                <tr>
+                    <td><strong>CoMagic</strong></td>
+                    <td>от 5 000 руб.</td>
+                    <td>Все + чаты</td>
+                    <td>Комплексная платформа</td>
+                    <td>Крупный бизнес</td>
+                </tr>
+                <tr>
+                    <td><strong>Roistat</strong></td>
+                    <td>от 4 900 руб.</td>
+                    <td>Сквозная аналитика</td>
+                    <td>ROI по каналам</td>
+                    <td>Средний/крупный</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-info">
+            <strong>Рекомендация для VR Fusion:</strong> Начните с <strong>Callibri</strong> (бюджетно) или <strong>Calltouch</strong> (оптимально). Переходите на Roistat когда бюджет на рекламу превысит 200K/месяц.
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Пошаговая настройка (на примере Calltouch)</h3>
+
+        <div class="instruction-block">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Регистрация</h4>
+                    <p>Перейдите на <a href="https://calltouch.ru" target="_blank">calltouch.ru</a> и создайте аккаунт. Выберите тариф.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Добавьте сайт</h4>
+                    <p>Личный кабинет → Проекты → Добавить проект. Укажите домен сайта.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Получите подменные номера</h4>
+                    <p>Закажите пул номеров (минимум 3-5 для динамической подмены).</p>
+                    <ul>
+                        <li><strong>Динамические</strong> — для онлайн-рекламы (разные для разных источников)</li>
+                        <li><strong>Статические</strong> — для офлайн (наружная реклама, визитки)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Установите скрипт на сайт</h4>
+                    <p>Calltouch выдаст JavaScript-код. Вставьте его в <code>&lt;head&gt;</code> сайта.</p>
+                    <div class="code-block">
+&lt;script&gt;
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'ctm.start':
+    new Date().getTime(),event:'ctm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+    j.src='//cdn.calltouch.ru/init/XXXXXXX.js';f.parentNode.insertBefore(j,f);
+    })(window,document,'script','ctmData','XXXXXXX');
+&lt;/script&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h4>Настройте правила подмены</h4>
+                    <p>Укажите, какой номер показывать для каких источников:</p>
+                    <ul>
+                        <li>Яндекс.Директ → номер 1</li>
+                        <li>VK Реклама → номер 2</li>
+                        <li>Органический трафик → номер 3</li>
+                        <li>Прямой заход → основной номер</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h4>Интеграция с Яндекс.Метрикой</h4>
+                    <p>Настройки → Интеграции → Яндекс.Метрика → укажите номер счётчика.</p>
+                    <p>Звонки будут передаваться как цели в Метрику.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                    <h4>Интеграция с CRM</h4>
+                    <p>Настройки → Интеграции → выберите вашу CRM (amoCRM, Bitrix24, RetailCRM).</p>
+                    <p>При входящем звонке в CRM автоматически создаётся лид с источником.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">8</div>
+                <div class="step-content">
+                    <h4>Тестирование</h4>
+                    <p>Перейдите на сайт с UTM-меткой (например, ?utm_source=test). Позвоните на отображаемый номер. Проверьте, что звонок зафиксирован в кабинете.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- БЛОК 4: UTM-МЕТКИ -->
+    <div class="card">
+        <h2>4. Система UTM-меток</h2>
+
+        <div class="alert alert-info">
+            <strong>UTM-метки</strong> — специальные параметры в URL, которые позволяют отслеживать источник трафика в аналитике.
+        </div>
+
+        <h3>Структура UTM-параметров</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Параметр</th>
+                    <th>Обязательный</th>
+                    <th>Назначение</th>
+                    <th>Примеры</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>utm_source</code></td>
+                    <td>Да</td>
+                    <td>Источник трафика</td>
+                    <td>yandex, vk, telegram, google</td>
+                </tr>
+                <tr>
+                    <td><code>utm_medium</code></td>
+                    <td>Да</td>
+                    <td>Тип трафика</td>
+                    <td>cpc, social, email, banner</td>
+                </tr>
+                <tr>
+                    <td><code>utm_campaign</code></td>
+                    <td>Да</td>
+                    <td>Название кампании</td>
+                    <td>birthday_promo, summer_sale</td>
+                </tr>
+                <tr>
+                    <td><code>utm_content</code></td>
+                    <td>Нет</td>
+                    <td>Вариант объявления</td>
+                    <td>banner_v1, video_15sec</td>
+                </tr>
+                <tr>
+                    <td><code>utm_term</code></td>
+                    <td>Нет</td>
+                    <td>Ключевое слово</td>
+                    <td>vr_arena_moscow</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Правила именования</h3>
+        <ul>
+            <li>Используйте только латиницу и нижнее подчёркивание</li>
+            <li>Всё в нижнем регистре (yandex, не Yandex)</li>
+            <li>Без пробелов (summer_sale, не summer sale)</li>
+            <li>Единообразно для всех кампаний</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>Готовые шаблоны UTM для VR Fusion</h3>
+
+        <h4>Яндекс.Директ</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}
+        </div>
+        <p><em>Динамические параметры {campaign_id}, {ad_id}, {keyword} автоматически подставляются Яндексом.</em></p>
+
+        <h4>VK Реклама</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=vk&utm_medium=cpc&utm_campaign={{campaign_id}}&utm_content={{ad_id}}
+        </div>
+
+        <h4>Telegram (посевы в каналах)</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=telegram&utm_medium=seed&utm_campaign=moscow_afisha
+https://vrfusion.ru/?utm_source=telegram&utm_medium=seed&utm_campaign=mama_moskvy
+https://vrfusion.ru/?utm_source=telegram&utm_medium=seed&utm_campaign=gamers_channel
+        </div>
+
+        <h4>Яндекс.Бизнес</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=yandex_business&utm_medium=maps&utm_campaign=subscription_180
+        </div>
+
+        <h4>2ГИС</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=2gis&utm_medium=maps&utm_campaign=premium_placement
+        </div>
+
+        <h4>Инфлюенсеры</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=influencer&utm_medium=instagram&utm_campaign=blogger_name
+https://vrfusion.ru/?utm_source=influencer&utm_medium=youtube&utm_campaign=gamer_channel
+https://vrfusion.ru/?utm_source=influencer&utm_medium=tiktok&utm_campaign=family_blogger
+        </div>
+
+        <h4>Email-рассылки</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=email&utm_medium=newsletter&utm_campaign=march_promo
+        </div>
+
+        <h4>QR-коды (офлайн)</h4>
+        <div class="code-block">
+https://vrfusion.ru/?utm_source=qr&utm_medium=offline&utm_campaign=flyer_svao
+https://vrfusion.ru/?utm_source=qr&utm_medium=offline&utm_campaign=business_card
+        </div>
+
+        <div class="alert alert-success">
+            <strong>Совет:</strong> Создайте Google Таблицу со всеми UTM-метками. Это поможет сохранять единообразие и быстро генерировать ссылки.
+        </div>
+    </div>
+
+    <!-- БЛОК 5: ИНТЕГРАЦИЯ С CRM -->
+    <div class="card">
+        <h2>5. Интеграция с CRM</h2>
+
+        <h3>Рекомендуемые CRM для VR-арены</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>CRM</th>
+                    <th>Цена</th>
+                    <th>Лучше для</th>
+                    <th>Интеграции</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Битрикс24</strong></td>
+                    <td>от 0 руб. (free)</td>
+                    <td>Комплексный подход</td>
+                    <td>Метрика, Директ, телефония</td>
+                </tr>
+                <tr>
+                    <td><strong>amoCRM</strong></td>
+                    <td>от 499 руб./мес</td>
+                    <td>Фокус на продажах</td>
+                    <td>Метрика, коллтрекинг, мессенджеры</td>
+                </tr>
+                <tr>
+                    <td><strong>YClients</strong></td>
+                    <td>от 694 руб./мес</td>
+                    <td>Услуги и записи</td>
+                    <td>Яндекс, 2ГИС, виджет записи</td>
+                </tr>
+                <tr>
+                    <td><strong>RetailCRM</strong></td>
+                    <td>от 1 500 руб./мес</td>
+                    <td>Ретейл и услуги</td>
+                    <td>Все каналы</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Воронка продаж VR Fusion</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Этап</th>
+                    <th>Статус</th>
+                    <th>Действие</th>
+                    <th>Срок</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. Лид</strong></td>
+                    <td>Новая заявка</td>
+                    <td>Первый контакт (звонок/сообщение)</td>
+                    <td>15 мин</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Квалификация</strong></td>
+                    <td>В работе</td>
+                    <td>Уточнение потребности (ДР/корпоратив/игра)</td>
+                    <td>24 часа</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Предложение</strong></td>
+                    <td>Презентация</td>
+                    <td>Отправка КП/прайса</td>
+                    <td>24 часа</td>
+                </tr>
+                <tr>
+                    <td><strong>4. Бронь</strong></td>
+                    <td>Бронь создана</td>
+                    <td>Ожидание предоплаты/подтверждения</td>
+                    <td>48 часов</td>
+                </tr>
+                <tr>
+                    <td><strong>5. Оплата</strong></td>
+                    <td>Оплачено</td>
+                    <td>Подтверждение брони</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td><strong>6. Визит</strong></td>
+                    <td>Завершено</td>
+                    <td>Сбор обратной связи</td>
+                    <td>24 часа после</td>
+                </tr>
+                <tr>
+                    <td><strong>7. Повторный</strong></td>
+                    <td>Реактивация</td>
+                    <td>Напоминание/предложение</td>
+                    <td>30-60 дней</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Обязательные поля в CRM</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Поле</th>
+                    <th>Тип</th>
+                    <th>Для чего</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Источник</strong></td>
+                    <td>Список</td>
+                    <td>Отслеживание каналов</td>
+                </tr>
+                <tr>
+                    <td><strong>UTM Source</strong></td>
+                    <td>Текст</td>
+                    <td>Детальный источник</td>
+                </tr>
+                <tr>
+                    <td><strong>UTM Campaign</strong></td>
+                    <td>Текст</td>
+                    <td>Название кампании</td>
+                </tr>
+                <tr>
+                    <td><strong>Тип услуги</strong></td>
+                    <td>Список</td>
+                    <td>ДР / Корпоратив / Игра / Турнир</td>
+                </tr>
+                <tr>
+                    <td><strong>Дата визита</strong></td>
+                    <td>Дата</td>
+                    <td>Планирование</td>
+                </tr>
+                <tr>
+                    <td><strong>Сумма сделки</strong></td>
+                    <td>Число</td>
+                    <td>Расчёт LTV</td>
+                </tr>
+                <tr>
+                    <td><strong>Промокод</strong></td>
+                    <td>Текст</td>
+                    <td>Офлайн-отслеживание</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- БЛОК 6: МЕТРИКИ ЯНДЕКС.БИЗНЕС -->
+    <div class="card">
+        <h2>6. Метрики Яндекс.Бизнес</h2>
+
+        <h3>Доступная статистика в кабинете</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Раздел</th>
+                    <th>Метрики</th>
+                    <th>Частота обновления</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Обзор</strong></td>
+                    <td>Показы, клики, целевые действия</td>
+                    <td>Ежедневно</td>
+                </tr>
+                <tr>
+                    <td><strong>Переходы</strong></td>
+                    <td>Прямые, Дискавери, Реклама, Внешние</td>
+                    <td>Ежедневно</td>
+                </tr>
+                <tr>
+                    <td><strong>Звонки</strong></td>
+                    <td>Принятые, пропущенные, длительность</td>
+                    <td>Реальное время</td>
+                </tr>
+                <tr>
+                    <td><strong>Маршруты</strong></td>
+                    <td>Построено маршрутов</td>
+                    <td>Ежедневно</td>
+                </tr>
+                <tr>
+                    <td><strong>Отзывы</strong></td>
+                    <td>Новые отзывы, средний рейтинг</td>
+                    <td>Реальное время</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Ограничения и решения</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ограничение</th>
+                    <th>Проблема</th>
+                    <th>Решение</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Нет API</td>
+                    <td>Нельзя автоматизировать выгрузку</td>
+                    <td>Еженедельный ручной экспорт в Excel</td>
+                </tr>
+                <tr>
+                    <td>Общая статистика</td>
+                    <td>Нельзя разделить Карты vs Поиск</td>
+                    <td>Использовать UTM для переходов на сайт</td>
+                </tr>
+                <tr>
+                    <td>Нет сквозной</td>
+                    <td>Не видно конверсию в продажу</td>
+                    <td>Коллтрекинг + промокоды + CRM</td>
+                </tr>
+                <tr>
+                    <td>Только кабинет</td>
+                    <td>Нет интеграции с дашбордами</td>
+                    <td>Ручной ввод данных в Google Sheets</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Настройка отслеживания</h3>
+        <div class="instruction-block">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Включите подменный номер</h4>
+                    <p>Яндекс.Бизнес → Настройки → Телефон → Включить подменный номер.</p>
+                    <p>Все звонки на него = клиенты с Яндекс.Бизнес.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Добавьте UTM к ссылке на сайт</h4>
+                    <p>Редактирование → Веб-сайт → добавьте:</p>
+                    <div class="code-block">?utm_source=yandex_business&utm_medium=maps&utm_campaign=subscription</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Создайте уникальный промокод</h4>
+                    <p>Добавьте в описание карточки: "Промокод YANDEX10 — скидка 10%"</p>
+                    <p>Настройте учёт промокода в CRM.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Создайте отчёт в Метрике</h4>
+                    <p>Отчёты → Источники → Метки UTM → utm_source = yandex_business</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h4>Еженедельный ритуал</h4>
+                    <p>Каждый понедельник:</p>
+                    <ol>
+                        <li>Выгрузите данные из кабинета Яндекс.Бизнес</li>
+                        <li>Сопоставьте с данными Яндекс.Метрики</li>
+                        <li>Подсчитайте лиды с промокодом в CRM</li>
+                        <li>Занесите в сводную таблицу</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- БЛОК 7: ДАШБОРДЫ -->
+    <div class="card">
+        <h2>7. Дашборды и отчётность</h2>
+
+        <h3>Инструменты визуализации</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Инструмент</th>
+                    <th>Цена</th>
+                    <th>Для кого</th>
+                    <th>Интеграции</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Looker Studio</strong> (ex-Data Studio)</td>
+                    <td>Бесплатно</td>
+                    <td>Все</td>
+                    <td>Google Sheets, Яндекс.Метрика (через коннекторы)</td>
+                </tr>
+                <tr>
+                    <td><strong>Яндекс DataLens</strong></td>
+                    <td>Бесплатно</td>
+                    <td>Экосистема Яндекса</td>
+                    <td>Метрика, Директ, ClickHouse</td>
+                </tr>
+                <tr>
+                    <td><strong>Power BI</strong></td>
+                    <td>от $10/мес</td>
+                    <td>Корпорации</td>
+                    <td>Все источники</td>
+                </tr>
+                <tr>
+                    <td><strong>Google Sheets</strong></td>
+                    <td>Бесплатно</td>
+                    <td>Начинающие</td>
+                    <td>Ручной ввод</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-success">
+            <strong>Рекомендация:</strong> Начните с <strong>Looker Studio</strong> или <strong>Яндекс DataLens</strong> — бесплатно и достаточно для начала.
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Рекомендуемые дашборды</h3>
+
+        <h4>Дашборд 1: Ежедневный мониторинг</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Показатель</th>
+                    <th>Источник</th>
+                    <th>Визуализация</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Выручка (факт/план)</td>
+                    <td>CRM</td>
+                    <td>Линейный график</td>
+                </tr>
+                <tr>
+                    <td>Количество визитов</td>
+                    <td>CRM</td>
+                    <td>Число</td>
+                </tr>
+                <tr>
+                    <td>Загрузка арены</td>
+                    <td>Расчёт</td>
+                    <td>Прогресс-бар</td>
+                </tr>
+                <tr>
+                    <td>Новые лиды</td>
+                    <td>CRM</td>
+                    <td>Число + сравнение</td>
+                </tr>
+                <tr>
+                    <td>Звонки</td>
+                    <td>Коллтрекинг</td>
+                    <td>Число</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Дашборд 2: Маркетинговая эффективность (еженедельно)</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Показатель</th>
+                    <th>Источник</th>
+                    <th>Визуализация</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Расходы по каналам</td>
+                    <td>Рекламные кабинеты</td>
+                    <td>Pie chart</td>
+                </tr>
+                <tr>
+                    <td>Лиды по каналам</td>
+                    <td>CRM + UTM</td>
+                    <td>Bar chart</td>
+                </tr>
+                <tr>
+                    <td>CAC по каналам</td>
+                    <td>Расчёт</td>
+                    <td>Таблица</td>
+                </tr>
+                <tr>
+                    <td>Конверсия по воронке</td>
+                    <td>CRM</td>
+                    <td>Funnel chart</td>
+                </tr>
+                <tr>
+                    <td>ROI по каналам</td>
+                    <td>Расчёт</td>
+                    <td>Bar chart</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Дашборд 3: Клиентская аналитика (ежемесячно)</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Показатель</th>
+                    <th>Источник</th>
+                    <th>Визуализация</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Новые vs повторные клиенты</td>
+                    <td>CRM</td>
+                    <td>Pie chart</td>
+                </tr>
+                <tr>
+                    <td>Retention Rate</td>
+                    <td>Расчёт</td>
+                    <td>Линейный график</td>
+                </tr>
+                <tr>
+                    <td>Средний чек по сегментам</td>
+                    <td>CRM</td>
+                    <td>Bar chart</td>
+                </tr>
+                <tr>
+                    <td>LTV</td>
+                    <td>Расчёт</td>
+                    <td>Число</td>
+                </tr>
+                <tr>
+                    <td>NPS</td>
+                    <td>Опросы</td>
+                    <td>Gauge</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- БЛОК 8: ЧЕК-ЛИСТ -->
+    <div class="card">
+        <h2>8. Чек-лист внедрения аналитики</h2>
+
+        <h3>Неделя 1: Базовая настройка</h3>
+        <ul class="checklist">
+            <li>Создать счётчик Яндекс.Метрики</li>
+            <li>Установить код на все страницы сайта</li>
+            <li>Настроить 4 основные цели (бронь, звонок, форма, цены)</li>
+            <li>Включить Вебвизор</li>
+            <li>Связать Метрику с Яндекс.Директ</li>
+            <li>Создать документ с UTM-метками</li>
+        </ul>
+
+        <h3>Неделя 2: Коллтрекинг</h3>
+        <ul class="checklist">
+            <li>Выбрать сервис коллтрекинга (Callibri/Calltouch)</li>
+            <li>Зарегистрироваться и оплатить тариф</li>
+            <li>Получить подменные номера (3-5 шт)</li>
+            <li>Установить скрипт на сайт</li>
+            <li>Настроить правила подмены</li>
+            <li>Интегрировать с Яндекс.Метрикой</li>
+            <li>Протестировать работу</li>
+        </ul>
+
+        <h3>Неделя 3: CRM и UTM</h3>
+        <ul class="checklist">
+            <li>Выбрать и настроить CRM (Битрикс24/amoCRM)</li>
+            <li>Создать воронку продаж</li>
+            <li>Добавить обязательные поля (источник, UTM)</li>
+            <li>Интегрировать коллтрекинг с CRM</li>
+            <li>Обновить все рекламные ссылки с UTM-метками</li>
+            <li>Настроить webhooks для форм сайта</li>
+        </ul>
+
+        <h3>Неделя 4: Отчёты и автоматизация</h3>
+        <ul class="checklist">
+            <li>Создать сводную таблицу в Google Sheets</li>
+            <li>Настроить еженедельный сбор данных</li>
+            <li>Создать дашборд в Looker Studio / DataLens</li>
+            <li>Провести обучение команды</li>
+            <li>Документировать все процессы</li>
+            <li>Назначить ответственного за аналитику</li>
+        </ul>
+    </div>
+
+    <!-- БЛОК 9: БЮДЖЕТ -->
+    <div class="card">
+        <h2>9. Бюджет на внедрение аналитики</h2>
+
+        <h3>Разовые расходы</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Статья</th>
+                    <th>Минимум</th>
+                    <th>Оптимально</th>
+                    <th>Комментарий</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Яндекс.Метрика</td>
+                    <td>0 руб.</td>
+                    <td>0 руб.</td>
+                    <td>Бесплатно</td>
+                </tr>
+                <tr>
+                    <td>Настройка целей (если нет разработчика)</td>
+                    <td>5 000 руб.</td>
+                    <td>15 000 руб.</td>
+                    <td>Фрилансер</td>
+                </tr>
+                <tr>
+                    <td>Интеграция CRM + коллтрекинг</td>
+                    <td>0 руб.</td>
+                    <td>20 000 руб.</td>
+                    <td>Своими силами или специалист</td>
+                </tr>
+                <tr>
+                    <td>Создание дашбордов</td>
+                    <td>0 руб.</td>
+                    <td>10 000 руб.</td>
+                    <td>Своими силами или аналитик</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>ИТОГО разово</strong></td>
+                    <td><strong>5 000 руб.</strong></td>
+                    <td><strong>45 000 руб.</strong></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Ежемесячные расходы</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Статья</th>
+                    <th>Минимум</th>
+                    <th>Оптимально</th>
+                    <th>Комментарий</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Яндекс.Метрика</td>
+                    <td>0 руб.</td>
+                    <td>0 руб.</td>
+                    <td>Бесплатно</td>
+                </tr>
+                <tr>
+                    <td>Коллтрекинг (Callibri)</td>
+                    <td>1 000 руб.</td>
+                    <td>3 000 руб.</td>
+                    <td>Зависит от объёма звонков</td>
+                </tr>
+                <tr>
+                    <td>CRM (Битрикс24 Free / amoCRM)</td>
+                    <td>0 руб.</td>
+                    <td>2 000 руб.</td>
+                    <td>Free или базовый тариф</td>
+                </tr>
+                <tr>
+                    <td>Looker Studio / DataLens</td>
+                    <td>0 руб.</td>
+                    <td>0 руб.</td>
+                    <td>Бесплатно</td>
+                </tr>
+                <tr>
+                    <td>Сквозная аналитика (Roistat) — опционально</td>
+                    <td>—</td>
+                    <td>4 900 руб.</td>
+                    <td>При бюджете 200K+</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>ИТОГО ежемесячно</strong></td>
+                    <td><strong>1 000 руб.</strong></td>
+                    <td><strong>10 000 руб.</strong></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-success">
+            <strong>Вывод:</strong> Полноценная система аналитики обойдётся в <strong>5-45K разово</strong> и <strong>1-10K ежемесячно</strong>. При правильной настройке она окупится за счёт оптимизации рекламного бюджета.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Следующие шаги</h2>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">День 1-2</div>
+                <div class="metric-label">Яндекс.Метрика</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">День 3-5</div>
+                <div class="metric-label">Коллтрекинг</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">День 6-10</div>
+                <div class="metric-label">CRM + UTM</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">День 11-14</div>
+                <div class="metric-label">Дашборды</div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>Результат:</strong> Через 2 недели у вас будет полноценная система аналитики, которая покажет ROI каждого рекламного канала и поможет оптимизировать бюджет.
+        </div>
+    </div>
+</div>
