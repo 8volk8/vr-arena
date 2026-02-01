@@ -108,11 +108,12 @@ body {
 .sidebar {
     width: 280px;
     background: var(--primary-color);
-    min-height: 100vh;
+    height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     transition: transform 0.3s;
     z-index: 1000;
 }
@@ -135,6 +136,8 @@ body {
 
 .nav-menu {
     padding: 15px 0;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .nav-item {
